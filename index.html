@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>m6AGC</title>
+    <link rel="icon" href="images/Heatmap.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/Heatmap.ico" type="image/x-icon">
+    <!-- 引入layui组件，其中layui.css文件经过了自定义 -->
+    <link rel="stylesheet" href="layui/css/layuimod.css">
+    <script src="layui/layui.js"></script>
+    <!-- 一些文本格式的自定义css -->
+    <link rel="stylesheet" href="styles/teststyle.css">
+    <!-- 引入echarts -->
+    <script src="./scripts/echarts.js"></script>
+
+</head>
+<body>
+    <!-- header：logo+title+nav -->
+    <div class="layui-container" id="header">
+        <div class="layui-container" id="inheader">
+            <div class="layui-row">
+                <div class="layui-col-md1">
+                    <div class="imagebox">
+                        <img src="images/Heatmap.svg" alt="" style="width: 50px;height: 50px;">
+                    </div>
+                </div>
+                <div class="layui-col-md11" id="imgboxside" style="height: 50px;">
+                    m6AGC: A plant m6A modified genes tool for comparison and analysis
+                </div>
+            </div>
+        </div>
+        <!-- navigation -->
+        <script>
+            layui.use('element',function(){
+                var element = layui.element
+            });
+        </script>
+        <ul class="layui-nav" lay-filter="" id="nav">
+            <li class="layui-nav-item layui-this"><a href="./index.html">HOME</a></li>
+            <!-- layui-this样式表示当前被选中 -->
+            <li class="layui-nav-item"><a href="./comparison.html">COMPARISON</a></li>
+            <li class="layui-nav-item"><a href="./about.html">ABOUT</a></li>
+        </ul>
+    </div>
+
+
+    <br>
+
+    <!-- homemain -->
+    <!-- introduction -->
+    <div class="layui-container" id="introduction">
+        <h3>Introduction</h3>
+        <hr class="layui-border-red" id="introhr">
+        <div class="layui-row">
+            <div class="layui-col-md12">
+                <p class="layui-text">M6A: N-6 methylation modification of RNA adenylate. It is the most common and critical internal modification of mRNA and lncRNAs in higher organisms. It regulates RNA stability, localization, transport, splicing and translation at the post-transcriptional level, enriching and regulating the genetic information of eukaryotes.<br>
+
+                In the field of botany, the scope and function of M6A modification has been the focus of research. With the deepening of research, a large number of M6A modification related data have been produced. But these data are often only used in a single study, resulting in a large data waste.<br>
+
+                <br>
+                The purpose of m6AGC is to build a platform to store m6A-modified gene data in different studies, and provide the comparison and comprehensive analysis of m6A-modified genes between data sets, so as to find out more biological significance.</p>
+            </div>
+        </div>
+        <br>
+        <!-- img元素外加p元素可以实现居中 -->
+        <p style="text-align: center;"><img src="./images/purpose2.svg" alt="" style="max-width: 80%;"></p>
+
+    </div>
+
+    <br>
+
+    <!-- browse -->
+    <div class="layui-container" id="browse">
+        <h3>Browse</h3>
+        <hr class="layui-border-red" id="introhr">
+        <div class="layui-row">
+            <div class="layui-col-md12">
+                <p style="line-height:25px">At present, 36 groups of m6A-seq data form different strains,different tissues and different experimental conditions of 4 plant species have been collected as build-in data, containing __ m6A modified genes.</p>
+            </div>
+            <!-- version&basic info -->
+            <div id="versiontable" class="layui-col-md5" style="height: 300px;">
+                <table class="layui-table" lay-skin="line">
+                    <tr style="background-color: #EA6A47;font-weight: bolder;color: white;">
+                        <td>Current version: v0.1</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><i class="layui-icon layui-icon-ok"></i>Species</td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td><i class="layui-icon layui-icon-ok"></i>Tissue</td>
+                        <td>12</td>
+                    </tr>
+                    <tr>
+                        <td><i class="layui-icon layui-icon-ok"></i>Strain</td>
+                        <td>11</td>
+                    </tr>
+                    <tr>
+                        <td><i class="layui-icon layui-icon-ok"></i>Sample/Dataset</td>
+                        <td>36</td>
+                    </tr>
+                    <tr>
+                        <td><i class="layui-icon layui-icon-ok"></i>m6A Genes</td>
+                        <td>>40000</td>
+                    </tr>
+                    
+                </table>
+            </div>
+            <!-- sample distribution -->
+            <div id="piechart" class="layui-col-md5 layui-col-md-offset1" style="height: 300px;">
+                <script>
+                    // 初始化echarts实例
+                    var myChart = echarts.init(document.getElementById('piechart'));
+                    // piechart
+                    var option = {
+                        title:{
+                            text:'Samples Distribution',
+                            textStyle:{
+                                fontSize:15
+                            }
+                        },
+                        color:[
+                            '#EA6A47',
+                            '#EAA447',
+                            '#356C97',
+                            '#33A765'
+                        ],
+                        tooltip: {
+                            trigger: 'item'
+                        },
+                        series: [
+                            {
+                            type: 'pie',
+                            data: [
+                                {
+                                value: 14,
+                                name: 'Arabidopsis thaliana'
+                                },
+                                {
+                                value: 12,
+                                name: 'Zea mays'
+                                },
+                                {
+                                value: 7,
+                                name: 'Oryza sativa'
+                                },
+                                {
+                                value: 3,
+                                name: 'Solanum lycopersicum'
+                                }
+                            ],
+                            radius: '60%'
+                            }
+                        ]
+                        };
+                    // 显示piechart
+                    myChart.setOption(option);
+                </script>
+            </div>
+            <!-- genes distribution barplot -->
+            <div id="genesbar" class="layui-col-md5" style="height: 300px;">
+                <script>
+                    var myChart = echarts.init(document.getElementById('genesbar'));
+                    var option = {
+                        title:{
+                            text:'m6A genes distribution',
+                            textStyle:{
+                                fontSize:15,
+                            },
+                        },
+                        color:[
+                            '#EA6A47',
+                            '#1C4E80'
+                        ],
+                        // 光标悬浮特效
+                        tooltip:{
+                            trigger:'axis',
+                            axisPointer:{
+                                type:'shadow'
+                            }
+                        },
+                        // 边缘留空，给坐标轴元素名留出空间
+                        grid: {
+                            left: '1%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis:{
+                            // 显示x轴线
+                            axisLine:{
+                                show:true,
+                            },
+                            name:'m6A genes'
+                        },
+                        yAxis:{
+                            data:['Arabidopsis','Maize','Oryza sativa','Solanum lycopersicum'],
+                            // 水平的轴线（不带有边缘停止线）
+                            axisTick: {
+                                alignWithLabel: true
+                            }
+                        },
+                        series:[
+                            {
+                                type:'bar',
+                                barWidth:'60%',
+                                // 单柱颜色设置-如何使用调色盘自动设置？
+                                data:[8000,{
+                                    value:20000,
+                                    itemStyle:{
+                                        color:'#EAA447'
+                                    }
+                                },{value:14000,
+                                    itemStyle:{
+                                        color:'#356C97'
+                                    }
+                                },{value:9000,
+                                    itemStyle:{
+                                        color:'#33A765'
+                                    }
+                                }]
+                            }
+                        ],
+                        radius:'80%'
+                    };
+                    myChart.setOption(option);
+                </script>
+            </div>
+            <!-- the most frequently modified genes -->
+            <div id="genecount" class="layui-col-md5 layui-col-md-offset1" style="height: 300px;">
+                <script>
+                    var myChart = echarts.init(document.getElementById('genecount'));
+                    var option = {
+                        title:{
+                            text:'the most frequently modified genes',
+                            textStyle:{
+                                fontSize:15,
+                            },
+                        },
+                        color:[
+                            '#EA6A47',
+                            '#1C4E80'
+                        ],
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        tooltip:{
+                            trigger:'axis',
+                            axisPointer:{
+                                type:'shadow'
+                            }
+                        },
+                        xAxis:{
+                            data:['AT5G65780','AT5G65770','AT1TE71775','AT1TE71775','AT5G40450','AT3G24080','AT5G42100','AT1G74250','AT4G38550','AT2G43160'],
+                            axisTick: {
+                                alignWithLabel: true
+                            },
+                            // 设置坐标轴字体倾斜和字体大小
+                            axisLabel:{
+                                interval:0,
+                                rotate:60,
+                                fontSize:10
+                            }
+                        },
+                        yAxis:{
+
+                        },
+                        series:[
+                            {
+                                type:'bar',
+                                barWidth:'50%',
+                                data:[46,38,35,34,34,24,23,22,21,19]
+                            }
+                        ]
+                    };
+                    myChart.setOption(option);
+                </script>
+            </div>
+
+        </div>
+        
+
+    </div>
+
+    <br>
+
+    <!-- turorial -->
+    <div class="layui-container" id="browse">
+        <h3>Tutorail</h3>
+        <hr class="layui-border-red" id="introhr">
+        <div class="layui-row">
+            <div class="layui-col-md12">
+                <p style="line-height:25px">The core function of m6AGC is comparison.Click the "COMPARISON" button in the navigation bar to enter the comparison interface.<br>
+
+                Select the information(species, phenotype, strain, tissue, treatment conditions) of the two samples that you are interested in, and click the "SUBMIT" button. You can also click the "upload" button when selecting one of the samples to upload your own sample data in a specified format and do a comparative analysis with the build-in data.<br>
+                
+                M6AGC will then give the basic information of the two samples and visualize the following five comparison results.<br>
+                
+                1. The m6A modified genes which are different between the two samples.<br>
+                
+                2. Methylation profile of m6A and identification of conserved sequence of m6A.<br>
+                
+                3. Analysis of differential expression of m6A genes between two samples.<br>
+                
+                4. GO Function, KEGG pathway enrichment analysis.<br>
+                
+                5. Analysis of protein interaction networks</p>
+            </div>
+        </div>
+        
+
+    </div>
+
+    <br>
+
+    <!-- footer -->
+    <div class="layui-container" id="footer">2022 zyk</div>
+
+
+
+
+
+
+
+
+</body>
+</html>
