@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>m6AGC</title>
+    <link rel="stylesheet" href="layui/css/layuimod.css">
+    <script src="layui/layui.js"></script>
+    <link rel="icon" href="images/Heatmap.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/Heatmap.ico" type="image/x-icon">
+    <link rel="stylesheet" href="styles/teststyle.css">
+    <!-- 级联下拉选择框渲染-待整合 -->
+    <link rel="stylesheet" href="styles/cascader.css" media="all">
+    <!-- 引入Highcharts -->
+    <script src="Highcharts-10.0.0/code/highcharts.js"></script>
+    <!-- Highcharts数据文件导入模组 -->
+    <script src="Highcharts-10.0.0/code/modules/data.js"></script>
+    <!-- Highcharts图表导出拓展按钮模组 -->
+    <script src="Highcharts-10.0.0/code/modules/exporting.js"></script>
+    <!-- Highcharts venn图模组 -->
+    <script src="Highcharts-10.0.0/code/modules/venn.js"></script>
+</head>
+<body>
+    <!-- header：logo+title+nav -->
+    <div class="layui-container" id="header">
+        <div class="layui-container" id="inheader">
+            <div class="layui-row">
+                <div class="layui-col-md1">
+                    <div class="imagebox">
+                        <img src="images/Heatmap.svg" alt="" style="width: 50px;height: 50px;">
+                    </div>
+                </div>
+                <div class="layui-col-md11" id="imgboxside" style="height: 50px;">
+                    m6AGC: A plant m6A modified genes tool for comparison and analysis
+                </div>
+            </div>
+        </div>
+        <!-- navigation -->
+        <script>
+            layui.use('element',function(){
+                var element = layui.element
+            });
+        </script>
+        <ul class="layui-nav" lay-filter="" id="nav">
+            <li class="layui-nav-item"><a href="./homepage.html">HOME</a></li>
+            <li class="layui-nav-item layui-this"><a href="./comparison.html">COMPARISON</a></li>
+            <li class="layui-nav-item"><a href="./about.html">ABOUT</a></li>
+        </ul>
+    </div>
+
+    <!-- Input part -->
+    <div class="layui-container" id="input">
+        <br>
+        <h2>Two Samples Comparison</h2>
+        <hr class="layui-border-red">
+        <br>
+        <!-- 输入表单-下拉式级联选择框 -->
+        <!-- 样本1选择框 -->
+        <form class="layui-form" id="myform">
+            <div class="layui-row">
+                <div class="layui-form-item layui-col-md10">
+                    <label class="layui-form-label">Sample 1</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="sample_1" name="sample_1" class="layui-input" readonly="readonly">
+                    </div>   
+                </div>
+                <!-- 样本1后按钮 -->
+                <div class="layui-col-md2">
+                    <button class="layui-btn layui-btn-primary" type="button" id="reload1_btn"><i class="layui-icon layui-icon-refresh "></i></button>
+                    <button class="layui-btn layui-btn-primary layui-btn-sm" type="button" id="upload1_btn"><i class="layui-icon layui-icon-addition"></i>upload</button>
+                </div>             
+                <div class="layui-form-item layui-col-md10">
+                    <label class="layui-form-label">Sample 2</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="sample_2" name="sample_2" class="layui-input" readonly="readonly">
+                    </div>   
+                </div>
+                <!-- 样本2后按钮 -->
+                <div class="layui-col-md2">
+                    <button class="layui-btn layui-btn-primary" type="button" id="reload2_btn"><i class="layui-icon layui-icon-refresh "></i></button>
+                    <button class="layui-btn layui-btn-primary layui-btn-sm" type="button" id="upload2_btn"><i class="layui-icon layui-icon-addition"></i>upload</button>
+                </div>             
+            </div>
+            <!-- buttons -->
+            <p style="text-align: center;">
+                <button class="layui-btn layui-btn-primary" type="button" id="reset_btn"><i class="layui-icon layui-icon-refresh-1 layui-font-12"></i>reset</button>
+                <button class="layui-btn layui-btn-warm" type="button" id="submit_btn"><i class="layui-icon layui-icon-ok layui-font-12"></i>SUBMIT</button>
+            </p>
+        </form>
+
+
+
+        <!-- 级联选择框js功能实现 -->
+        <script>
+            layui.config({
+                base: "./layui/lay/mymodules/"
+            }).use(['form',"jquery","cascader","layer"], function(){
+                var layer = layui.layer;
+                var $ = layui.jquery;
+                var cascader = layui.cascader;
+
+                var data = [
+                    {
+                        value: 'A',
+                        label: 'Arabidopsis thaliana',
+                        children: [
+                            {
+                                value: 'A1',
+                                label: 'Can-0',
+                                children:[
+                                    {
+                                        value:'A11',
+                                        label:'Seeding',
+                                        children:[
+                                            {
+                                                value:'A111',
+                                                label:'/'
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                value: 'A2',
+                                label: 'Col-0',
+                                children:[
+                                    {
+                                        value:'A21',
+                                        label:'Flower',
+                                        children:[
+                                            {
+                                                value:'A211',
+                                                label:'_1'
+                                            },
+                                            {
+                                                value:'A212',
+                                                label:'_2'
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        value:'A22',
+                                        label:'Leaf at flowering',
+                                        children:[
+                                            {
+                                                value:'A221',
+                                                label:'_1'
+                                            },
+                                            {
+                                                value:'A222',
+                                                label:'_2'
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        value:'A23',
+                                        label:'Root at flowering',
+                                        children:[
+                                            {
+                                                value:'A231',
+                                                label:'_1'
+                                            },
+                                            {
+                                                value:'A232',
+                                                label:'_2'
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        value:'A24',
+                                        label:'4 week old leaves 5-9',
+                                        children:[
+                                            {
+                                                value:'A241',
+                                                label:'ABI3:MTA (mta)'
+                                            },
+                                            {
+                                                value:'A242',
+                                                label:'WT'
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        value:'A25',
+                                        label:'Seedlings',
+                                        children:[
+                                            {
+                                                value:'A251',
+                                                label:'atalkbh10b -/-'
+                                            },
+                                            {
+                                                value:'A252',
+                                                label:'WT'
+                                            },
+                                        ]
+                                    },
+                                    
+                                ]
+                            },
+                            {
+                                value: 'A3',
+                                label: 'Columbia',
+                                children:[
+                                    {
+                                        value:'A31',
+                                        label:'Seeding',
+                                        children:[
+                                            {
+                                                value:'A311',
+                                                label:'fip37-4 LEC1:FIP37'
+                                            },
+                                            {
+                                                value:'A312',
+                                                label:'WT'
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                value: 'A4',
+                                label: 'Hen-16',
+                                children:[
+                                    {
+                                        value:'A41',
+                                        label:'Seeding',
+                                        children:[
+                                            {
+                                                value:'A411',
+                                                label:'/'
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                        ]
+                    },
+                    {
+                        value: 'O',
+                        label: 'Oryza sativa',
+                        children: [
+                            {
+                                value: 'O1',
+                                label: 'Japonica',
+                                children: [
+                                    {
+                                        value: 'O11',
+                                        label: 'Leaf',
+                                        children:[
+                                            {
+                                                value:'O111',
+                                                label:'/'
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        value: 'O12',
+                                        label: 'Callus',
+                                        children:[
+                                            {
+                                                value:'O121',
+                                                label:'/'
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        value: 'O13',
+                                        label: 'pollen mother cell stage',
+                                        children: [
+                                            {
+                                                value: 'O131',
+                                                label: 'WT',
+                                            },
+                                            {
+                                                value: 'O132',
+                                                label: 'pollen abortion',
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        value: 'O14',
+                                        label: 'microspore stage',
+                                        children: [
+                                            {
+                                                value: 'O141',
+                                                label: 'WT',
+                                            },
+                                            {
+                                                value: 'O142',
+                                                label: 'pollen abortion',
+                                            },
+                                        ]
+                                    },
+                                ]
+                            },
+                            {
+                                value: 'O2',
+                                label: 'Nipponbare',
+                                children: [
+                                    {
+                                        value: 'O21',
+                                        label: 'leaves ',
+                                        children:[
+                                            {
+                                                value:'O211',
+                                                label:'/'
+                                            }
+                                        ]
+                                    },
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        value: 'S',
+                        label: 'Solanum lycopersicum',
+                        children:[
+                            {
+                                value:'S1',
+                                label:'Ailsa Craig',
+                                children:[
+                                    {
+                                        value:'S11',
+                                        label:'pericarps',
+                                        children:[
+                                            {
+                                                value:'S111',
+                                                label:'39 DPA WT pericarps'
+                                            },
+                                            {
+                                                value:'S112',
+                                                label:'42 DPA WT pericarps'
+                                            },
+                                            {
+                                                value:'S113',
+                                                label:'42 DPA cnr pericarpss'
+                                            },
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        value: 'Z',
+                        label: 'Zea mays',
+                        children:[
+                            {
+                                value:'Z1',
+                                label:'B73',
+                                children:[
+                                    {
+                                        value:'Z11',
+                                        label:'Seedlings',
+                                        children:[
+                                            {
+                                                value:'Z111',
+                                                label:'well-watered'
+                                            },
+                                            {
+                                                value:'Z112',
+                                                label:'drought stress'
+                                            },
+                                            {
+                                                value:'Z113',
+                                                label:'/'
+                                            },
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                value:'Z2',
+                                label:'CAL',
+                                children:[
+                                    {
+                                        value:'Z21',
+                                        label:'Embryos',
+                                        children:[
+                                            {
+                                                value:'Z211',
+                                                label:'immature embryos with induction at 2 days'
+                                            },
+                                            {
+                                                value:'Z212',
+                                                label:'immature embryos with induction at 4 days'
+                                            },
+                                            {
+                                                value:'Z213',
+                                                label:'immature embryos with induction at 8 days'
+                                            },
+                                            {
+                                                value:'Z214',
+                                                label:'immature embryos without induction at 2 days'
+                                            },
+                                            {
+                                                value:'Z215',
+                                                label:'immature embryos without induction at 2 days'
+                                            },
+                                            {
+                                                value:'Z216',
+                                                label:'immature embryos without induction at 8 days'
+                                            },
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                value:'Z3',
+                                label:'H21',
+                                children:[
+                                    {
+                                        value:'Z31',
+                                        label:'Seedlings',
+                                        children:[
+                                            {
+                                                value:'Z311',
+                                                label:'well-watered'
+                                            },
+                                            {
+                                                value:'Z312',
+                                                label:'drought stress'
+                                            },
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                value:'Z4',
+                                label:'Mo17',
+                                children:[
+                                    {
+                                        value:'Z41',
+                                        label:'Seedlings',
+                                        children:[
+                                            {
+                                                value:'Z411',
+                                                label:'/'
+                                            },
+                                        ]
+                                    }
+                                ]
+                            },
+                        ]
+                    }
+                ]
+                var cas=cascader({
+                    elem: "#sample_1",
+                    data: data,
+                    // url: "/aa",
+                    // type: "post",
+                    // triggerType: "change",
+                    // showLastLevels: true,
+                    // where: {
+                    //     a: "aaa"
+                    // },
+                    value: ["A","A1","A11","A111"],
+                    // changeOnSelect: true,
+                    // canParentSelect:true,
+                    success: function (valData,labelData) {
+                        console.log(valData,labelData);
+                    }
+                });
+
+                var cas2=cascader({
+                    elem: "#sample_2",
+                    data: data,
+                    // url: "/aa",
+                    // type: "post",
+                    // triggerType: "change",
+                    // showLastLevels: true,
+                    // where: {
+                    //     a: "aaa"
+                    // },
+                    value: ["A","A1","A11","A111"],
+                    // changeOnSelect: true,
+                    // canParentSelect:true,
+                    success: function (valData,labelData) {
+                        console.log(valData,labelData);
+                    }
+                });
+    
+                // var reloadData=[
+                //     {
+                //         value: 'A',
+                //         label: 'a',
+                //         children: [
+                //             {
+                //                 value: 'AA1',
+                //                 label: 'aa1',
+                //             },
+                //             {
+                //                 value: 'BB1',
+                //                 label: 'bb1'
+                //             }
+                //         ]
+                //     }
+                // ]
+
+                // reset按钮功能实现
+                $("#reset_btn").on("click",function() {
+                    cas.reload({
+                        data: data,
+                        value:["A","A1","A11","A111"]
+                    });
+                    cas2.reload({
+                        data: data,
+                        value:["A","A1","A11","A111"]
+                    });
+                });
+
+                // reload1&2按钮功能
+                $("#reload1_btn").on("click",function() {
+                    cas.reload({
+                        data: data,
+                        value:["A","A1","A11","A111"]
+                    });
+                });
+                $("#reload2_btn").on("click",function() {
+                    cas2.reload({
+                        data: data,
+                        value:["A","A1","A11","A111"]
+                    });
+                });
+
+                // upload1&2按钮上传文件功能
+                function upload() {
+                    var inputObj=document.createElement('input')
+                    inputObj.setAttribute('id','file');
+                    inputObj.setAttribute('type','file');
+                    inputObj.setAttribute('name','file');
+                    inputObj.setAttribute("style",'visibility:hidden');
+                    document.body.appendChild(inputObj);
+                    inputObj.value;
+                    inputObj.click();
+                    console.log(inputObj);
+                } 
+                    // 问题：只能上传一次，upload两次或者刷新一个数据后不显示上传的数据
+                $("#upload1_btn").on('click',function(){
+                    delete cas;
+                    upload();
+                    document.querySelector('#file').addEventListener('change', e => {
+                        for (let entry of e.target.files){
+                            document.getElementById("sample_1").value=entry.name;
+                            console.log(entry.name, entry.webkitRelativePath);
+                        }
+                    });
+                });
+
+                $("#upload2_btn").on('click',function(){
+                    delete cas2;
+                    upload();
+                    document.querySelector('#file').addEventListener('change', e => {
+                        for (let entry of e.target.files){
+                            document.getElementById("sample_2").value=entry.name;
+                            console.log(entry.name, entry.webkitRelativePath);
+                        }
+                    });
+                });
+
+
+                // submit按钮：重复检验与提交功能
+                $("#submit_btn").on("click",function(){
+                    // 表单内容获取
+                    var test1 = document.getElementById("sample_1").value;
+                    var test2 = document.getElementById("sample_2").value;
+                    var arr1 = test1.split("/");
+                    var arr2 = test2.split("/");
+                    // 检验：是否选择了不同样本
+                    if (test1 == test2) {
+                        layer.msg("Please select two different samples!");
+                    }else{
+                        tablefill();
+                    }
+                    
+                    // 基本信息表格填充
+                    function tablefill(){
+                        document.getElementById("species_1").style.fontWeight = "";
+                        document.getElementById("species_2").style.fontWeight = "";
+                        document.getElementById("strain_1").style.fontWeight = "";
+                        document.getElementById("strain_2").style.fontWeight = "";
+                        document.getElementById("tissue_1").style.fontWeight = "";
+                        document.getElementById("tissue_2").style.fontWeight = "";
+                        document.getElementById("condition_1").style.fontWeight = "";
+                        document.getElementById("condition_2").style.fontWeight = "";
+                        if (arr1[0]!=arr2[0]) {
+                            document.getElementById("species_1").innerHTML = arr1[0];
+                            document.getElementById("species_2").innerHTML = arr2[0];
+                            document.getElementById("species_1").style.fontWeight = "bolder";
+                            document.getElementById("species_2").style.fontWeight = "bolder";
+                        }else{
+                            document.getElementById("species_1").innerHTML = arr1[0];
+                            document.getElementById("species_2").innerHTML = arr2[0];
+                        }
+                        if (arr1[1]!=arr2[1]) {
+                            document.getElementById("strain_1").innerHTML = arr1[1];
+                            document.getElementById("strain_2").innerHTML = arr2[1];
+                            document.getElementById("strain_1").style.fontWeight = "bolder";
+                            document.getElementById("strain_2").style.fontWeight = "bolder";
+                        }else{
+                            document.getElementById("strain_1").innerHTML = arr1[1];
+                            document.getElementById("strain_2").innerHTML = arr2[1];
+                        }
+                        if (arr1[2]!=arr2[2]) {
+                            document.getElementById("tissue_1").innerHTML = arr1[2];
+                            document.getElementById("tissue_2").innerHTML = arr2[2];
+                            document.getElementById("tissue_1").style.fontWeight = "bolder";
+                            document.getElementById("tissue_2").style.fontWeight = "bolder";
+                        }else{
+                            document.getElementById("tissue_1").innerHTML = arr1[2];
+                            document.getElementById("tissue_2").innerHTML = arr2[2];
+                        }
+                        if (arr1[3]!=arr2[3]) {
+                            document.getElementById("condition_1").innerHTML = arr1[3];
+                            document.getElementById("condition_2").innerHTML = arr2[3];
+                            document.getElementById("condition_1").style.fontWeight = "bolder";
+                            document.getElementById("condition_2").style.fontWeight = "bolder";
+                        }else{
+                            document.getElementById("condition_1").innerHTML = arr1[3];
+                            document.getElementById("condition_2").innerHTML = arr2[3];
+                        }
+                        document.getElementById("genes_1").innerHTML = '12514';
+                        document.getElementById("genes_2").innerHTML = '8820';
+                    }
+
+                    
+                });
+
+                // 点击图片放大查看
+                
+
+
+            });
+        </script>
+
+            
+
+
+
+
+    </div>
+
+    <br>
+    <br>
+    <br>
+    <!-- Result Part -->
+    <div class="layui-container" id="result">
+        <h2>Results</h2>
+        <hr class="layui-border-red">
+        <!-- 基本信息表格 -->
+        <table class="layui-table" lay-even lay-skin="row" id="basicinfo_table">
+            <!-- 设置表格每列宽度，未设置的按设置的来覆盖，最后一列占满 -->
+            <colgroup>
+                <col width="">
+                <col width="400">
+                <col width="400">
+            </colgroup>
+            <tbody id="tablebody">
+                <tr>
+                    <td>Sample ID</td>
+                    <td style="font-weight: bolder;">Sample_1</td>
+                    <td style="font-weight: bolder;">Sample_2</td>
+                </tr>
+                <tr>
+                    <td>Species</td>
+                    <td id="species_1"></td>
+                    <td id="species_2"></td>
+                </tr>
+                <tr>
+                    <td>Strain</td>
+                    <td id="strain_1"></td>
+                    <td id="strain_2"></td>
+                </tr>
+                <tr>
+                    <td>Tissue</td>
+                    <td id="tissue_1"></td>
+                    <td id="tissue_2"></td>
+                </tr>
+                <tr>
+                    <td>Condition</td>
+                    <td id="condition_1"></td>
+                    <td id="condition_2"></td>
+                </tr>
+                <tr>
+                    <td>m6A Genes</td>
+                    <td id="genes_1"></td>
+                    <td id="genes_2"></td>
+                </tr>
+                
+            </tbody>
+        </table>
+
+        <br>
+        <!-- 比对分析结果可视化 -->
+        <div class="layui-row layui-col-space25">
+            <!-- 1.m6A基因重叠Venn图 -->
+            <div class="layui-col-md4" id="Venn" style="height: 300px">
+                <script>
+                    var charts = Highcharts.chart('Venn', {
+                        series: [{
+                            type: 'venn',
+                            name: 'm6A modified Genes',
+                            dataLabels:{
+                                enabled: true,
+                                // distance: -15,
+                                format:'<b>{point.name}:{point.value}</b>',
+                                // style:{
+                                //     fontSize:10
+                                // }
+
+                            },
+                            data: [{
+                                sets: ['Sample 1'],
+                                value: 12514,
+                                color:'#EA6A47',
+                                name: 'Sample 1'
+                            }, {
+                                sets: ['Sample 2'],
+                                value: 8820,
+                                color:'#1C4E80',
+                                name: 'Sample 2'
+                            }, {
+                                sets: ['Sample 1', 'Sample 2'],
+                                value: 3615,
+                                color:'#835C64',
+                                name: 'Overlap'
+                            }, 
+                            ]
+                        }],
+                        exporting:{
+                            enabled:false
+                        },
+                        title: {
+                            text: 'm6A Genes Overlap',
+                            style:{
+                                fontFamily:'Arial'
+                            }
+                        }
+                    });
+
+                </script>
+
+            </div>
+            
+            <!-- 2. 差异表达火山图 + MA图 -->
+            <div class="layui-col-md4" id="DE_Volcano" style="height: 250px;text-align: center; font-size: 18px; font-family: Arial;">
+                Volcano Plot
+                <a href="./glimmaOutput/volcanoTest.html" target="_blank">
+                    <abbr title="click for interactive visualisation">
+                        <button class="layui-btn layui-btn-xs layui-btn-warm">explore</button>
+                    </abbr>
+                </a>
+                <img src="glimmaOutput/volcanoTest.png" alt="" id="Volcano_png">
+            </div>
+            <div class="layui-col-md4" id="DE_MA" style="height: 250px;text-align: center; font-size: 18px; font-family: Arial;">
+                MA Plot
+                <a href="./glimmaOutput/MATest.html" target="_blank">
+                    <abbr title="click for interactive visualisation">
+                        <button class="layui-btn layui-btn-xs layui-btn-warm">explore</button>
+                    </abbr>
+                </a>
+                <img src="glimmaOutput/MATest.png" alt="" id="MA_png">
+            </div>
+
+
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <div class="layui-row layui-col-space25">
+            <!-- 3. motif plot -->
+            <div class="layui-col-md4" id="m6A_motif" style="height: 400px;text-align: center; font-size: 18px; font-family: Arial;">
+                m6A Motif Plot
+                <div id="motif_plot">
+                    <div style="text-align: center; font-weight: bolder;font-size: 14px;">
+                        m6A motif sequence in sample 1
+                    </div>
+                    <img src="./images/MEME/MEMEtest3.png" alt="" style="width: 90%;">
+                    <div style="text-align: center; font-weight: bolder;font-size: 14px;">
+                        m6A motif sequence in sample 2
+                    </div>
+                    <img src="./images/MEME/MEMEtest3.png" alt="" style="width: 90%;">
+                </div>
+                
+            </div>
+
+            <!-- 4. m6A reads coverage along transcript  -->       
+            <div class="layui-col-md8" id="m6A_peak" style="height: 400px;text-align: center; font-size: 18px; font-family: Arial;">
+                m6A Reads Coverage    
+                <div style="text-align: left;" class="pic">
+                    <!-- distribution plot -->
+                    <img src="./images/m6Areads/图片1.svg" alt="" style="width: 60%;float: left;">                    
+                    <!-- pie plot -->              
+                    <div id="pie_1" style="height: 150px;width: 35%;float: left;">
+                        <script>
+                            Highcharts.chart('pie_1', {
+                                plotOptions: {
+                                    series: {
+                                        // general options for all series
+                                    },
+                                    pie: {
+                                        colors:[
+                                            '#835C64',
+                                            '#EAA447',
+                                            '#356C97',
+                                            '#EA6A47',
+                                            '#33A765',   
+                                        ],
+                                        
+                                    }
+                                },
+                                tooltip: {
+                                    pointFormat: '<b>{point.percentage:.1f}%</b>'
+                                },
+                                series: [{
+                                    // specific options for this series instance
+                                    type: 'pie',
+                                    data:[
+                                        ["5' UTR",1],
+                                        ["Start codon",16],
+                                        ['CDS',13],
+                                        ['Stop codon',61],
+                                        ["3' UTR",9]
+                                    ],
+                                    dataLabels:{
+                                            enabled: false,
+                                            // distance: -15,
+                                            // format:'<b>{point.percentage:.1f}%</b>',
+                                            // style:{
+                                            //     fontSize:10
+                                            // }
+
+                                        }
+                                }],
+                                title:{
+                                    text:'m6A reads in sample 1',
+                                    style:{
+                                        fontFamily:'Arial',
+                                        fontSize:'14px',
+                                        fontWeight:'bolder'
+                                    },
+                                    margin:5
+                                },
+                                exporting:{
+                                    enabled:false
+                                }
+                            });
+                        </script>
+                    </div>
+                    <div id="pie_2" style="height: 150px;width: 35%;float: left;">
+                        <script>
+                            Highcharts.chart('pie_2', {
+                                plotOptions: {
+                                    series: {
+                                        // general options for all series
+                                    },
+                                    pie: {
+                                        colors:[
+                                            '#835C64',
+                                            '#EAA447',
+                                            '#356C97',
+                                            '#EA6A47',
+                                            '#33A765',
+                                        ],
+                                        showInLegend: true
+                                    }
+                                },
+                                tooltip: {
+                                    pointFormat: '<b>{point.percentage:.1f}%</b>'
+                                },
+                                chart:{
+                                    marginLeft: 0
+                                },
+                                legend:{
+
+                                    align: 'right',
+                                    layout:'Vertical',
+                                    // verticalAlign: 'top',
+                                    x: 35,
+                                    // y: 80,
+                                    floating: true,
+                                    // borderWidth: 1,
+                                    // backgroundColor:
+                                    // Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
+                                    // shadow: false
+                                },
+                                series: [{
+                                    // specific options for this series instance
+                                    type: 'pie',
+                                    data:[
+                                        ["5' UTR",0],
+                                        ["Start codon",6],
+                                        ['CDS',6],
+                                        ['Stop codon',74],
+                                        ["3' UTR",14]
+                                    ],
+                                    dataLabels:{
+                                            enabled: false,
+                                            // distance: -15,
+                                            // format:'<b>{point.percentage:.1f}%</b>',
+                                            // style:{
+                                            //     fontSize:10
+                                            // }
+
+                                        }
+                                    
+                                }],
+                                title:{
+                                    text:'m6A reads in sample 2',
+                                    style:{
+                                        fontFamily:'Arial',
+                                        fontSize:'14px',
+                                        fontWeight:'bolder'
+                                    },
+                                    margin:5
+                                },
+                                exporting:{
+                                    enabled:false
+                                }
+                            });
+                        </script>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            
+        </div>
+
+        <br>
+        <br>
+
+        <div class="layui-row layui-col-space25">
+            <!-- 5. GO and KEGG enrichment -->
+            <div class="layui-col-md8" id="GO_1" style="height: 400px;text-align: center; font-size: 18px; font-family: Arial;">
+                <script>
+                    Highcharts.chart('GO_1', {
+                        plotOptions: {
+                            series: {
+                                // general options for all series
+                                pointWidth:15
+                            },
+                            bar: {
+                                // shared options for all bar series
+                            }
+                        },
+                        xAxis: {
+                            categories: ['methyltransferase activity', 'transcription coactivator activity', 'RNA binding', 'DNA binding', 'intracellular part','nuclear part','intracellular organelle','nucleus','cellular macromolecule metabolic process','gene expression','RNA metabolic process'],
+                            title: {
+                                text: null
+                            },
+                            pointPadding: 0,
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: '-log10(adj.P-Value)',
+                                align: 'high'
+                            },
+                            labels: {
+                                overflow: 'justify'
+                            }
+                        },
+                        tooltip:{
+                            pointFormat: '-log10(adj.P-Value): <b>{point.y}</b><br/>',
+                        },
+                        // data:[5,10,47.5,82.1,90,92,95,129,108,118,128]
+                        series: [{
+                            color:'#EA6A47',
+                            type: 'bar',
+                            name:'Biological Process',
+                            data:[5,10,47.5,82.1,0,0,0,0,0,0,0]
+                        },{
+                            color:'#1C4E80',
+                            type: 'bar',
+                            name:'Cellular Component',
+                            data:[0,0,0,0,90,92,95,129,0,0,0]
+                        },{
+                            color:'#835C64',
+                            type:'bar',
+                            name:'Molecular Function',
+                            data:[0,0,0,0,0,0,0,0,108,118,128]
+                        }
+                        ],
+                        exporting:{
+                            enabled:false
+                        },
+                        title:{
+                            text:'GO Enrichment Analysis',
+                            style:{
+                                fontFamily:'Arial'
+                            }
+                        }
+                    });
+                </script>
+            </div>
+
+            <!-- 6. Protein Interaction Network -->
+            <div class="layui-col-md4" id="Network" style="height: 400px;text-align: center; font-size: 18px; font-family: Arial;">
+                Interaction Network
+                <a href="./networkD3/net_test2.html" target="_blank">
+                    <abbr title="click for interactive visualisation">
+                        <button class="layui-btn layui-btn-xs layui-btn-warm">explore</button>
+                    </abbr>
+                </a>
+                <div class="pic">
+                    <img src="./networkD3/Rplot02.png" alt="" style="height: 100%;">
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+</body>

@@ -1,0 +1,68 @@
+#imgboxside{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 25px;
+    font-weight: bolder;
+    line-height: 2.0em
+}
+
+#upper{
+    background-color:#1C4E80;
+}
+
+#nav{
+    background-color:#EA6A47;
+    font-weight: bolder;
+}
+
+h3{
+    font-weight: bolder;
+}
+
+#footer{
+    text-align: center;
+    background-color:#EA6A47;
+    float:end;
+}
+
+.layui-form-label{
+    font-weight: bolder;
+}
+
+#tablebody{
+    text-align: center;
+}
+
+/* #DE_Volcano{
+    border: 1px #EA6A47 solid;
+} */
+#Volcano_png{
+    text-anchor: middle;
+    width: 90%;
+    border: 1px #EA6A47 solid;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+#MA_png{
+    text-anchor: middle;
+    width: 90%;
+    border: 1px #EA6A47 solid;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+#motif_plot{
+    border: 1px #EA6A47 solid;
+    border-radius: 10px;
+    margin-top: 15px;
+}
+
+.pic{
+    border: 1px #EA6A47 solid;
+    border-radius: 10px;
+    margin-top: 15px;
+    height: 330px;
+}
+
+.clearfix{
+    clear: both;
+}
